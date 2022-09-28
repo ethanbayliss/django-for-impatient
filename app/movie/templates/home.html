@@ -1,0 +1,31 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Movies App</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to Home Page, {{ name }}</h1>
+      <h2>This is the full home page</h2>
+      <form action="">
+        <div class="mb-3">
+          <label for="searchLabel" class="form-label">Search</label>
+          <input type="text" class="form-control" name="searchMovie">
+          <div id="searchHelp" class="form-text">Enter the movie you'd like to search for</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      Searching for {{ searchTerm }}
+      <form action="{% url 'signup' %}">
+        <div class="mb-3">
+          <label for="emailLabel" class="form-label">Join our mailing list</label>
+          <input type="text" class="form-control" name="email">
+          <div id="mailingListHelp" class="form-text">Enter your email to subscribe to our mailing list</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+  </body>
+</html>
