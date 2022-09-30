@@ -21,10 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-60%oubdra03ol==e9(e!ra#u_q11=yc)72j2ez5)hqz*tgq4=y"
+SECRET_KEY = os.environ.get("SECRET_KEY") or os.environ.get("DJANGO_FOR_IMPATIENT_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# turn debug on when we are in a codespace
+DEBUG = (os.environ.get("CODESPACES") == "true")
 
 ALLOWED_HOSTS = []
 
@@ -75,13 +76,22 @@ WSGI_APPLICATION = "impatient.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": "postgres",
+        "USER" : "postgres",
+        "PASSWORD" : "postgres",
+        "HOST" : "localhost",
+        "PORT" : "5432",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
