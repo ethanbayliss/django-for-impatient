@@ -21,11 +21,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY") or os.environ.get("DJANGO_FOR_IMPATIENT_SECRET_KEY")
+SECRET_KEY = os.environ["DJANGO_FOR_IMPATIENT_SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # turn debug on when we are in a codespace
-DEBUG = (os.environ.get("CODESPACES") == "true")
+DEBUG = os.environ.get("CODESPACES") == "true"
 
 ALLOWED_HOSTS = []
 
@@ -75,23 +75,30 @@ WSGI_APPLICATION = "impatient.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
+# Use devcontainers database if we are in a codespace
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER" : "postgres",
-        "PASSWORD" : "postgres",
-        "HOST" : "localhost",
-        "PORT" : "5432",
+if os.environ.get("CODESPACES") == "true":
+    DATABASES = {
+        "default": {
+            "ENGINE"  : "django.db.backends.postgresql",
+            "NAME"    : "postgres",
+            "USER"    : "postgres",
+            "PASSWORD": "postgres",
+            "HOST"    : "localhost",
+            "PORT"    : "5432",
+        }
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE"  : "django.db.backends.postgresql",
+            "NAME"    : os.environ["DB_NAME"],
+            "USER"    : os.environ["DB_USER"],
+            "PASSWORD": os.environ["DB_PASSWORD"],
+            "HOST"    : os.environ["DB_HOST"],
+            "PORT"    : os.environ["DB_PORT"],
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -116,12 +123,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
 LANGUAGE_CODE = "en-au"
-
-TIME_ZONE = "Australia/Perth"
-
-USE_I18N = True
-
-USE_TZ = True
+TIME_ZONE     = "Australia/Perth"
+USE_I18N      = True
+USE_TZ        = True
 
 
 # Static files (CSS, JavaScript, Images)
