@@ -10,6 +10,3 @@ variable "AWS_DEFAULT_REGION" {
 
 variable "environment" {
 }
-
-variable "eks_sso_admin_role_arn" {
-}
