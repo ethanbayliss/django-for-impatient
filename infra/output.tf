@@ -9,4 +9,4 @@ output "cluster_name" {
 }
 
 #kubectl config
-# aws eks --region $(terraform output -raw region) update-kubeconfig --name $(terraform output -raw cluster_name)
+# aws eks update-kubeconfig --region $(terraform output -raw region) --name $(terraform output -raw cluster_name)

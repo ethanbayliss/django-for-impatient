@@ -29,3 +29,25 @@ module "vpc" {
     "kubernetes.io/role/internal-elb"     = 1
   }
 }
+
+resource "aws_security_group" "bastion_sg" {
+  name        = "bastion_sg"
+  description = "Allows ssh to eks managed nodes"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    description      = "SSH from Public"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["61.245.137.26/32"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+}
