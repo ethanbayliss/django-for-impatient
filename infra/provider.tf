@@ -19,13 +19,18 @@ terraform {
 
 provider "aws" {
   region = var.AWS_DEFAULT_REGION
+}
 
-  default_tags {
-    tags = {
-      Environment = var.environment
-      DeployedBy  = "Terraform"
-      GithubRepo = "django-for-impatient"
-      GithubOrg  = "ethanbayliss"
-    }
+provider "kubernetes" {
+  host                   = module.eks_blueprints.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+  token                  = data.aws_eks_cluster_auth.this.token
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = module.eks_blueprints.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks_blueprints.eks_cluster_certificate_authority_data)
+    token                  = data.aws_eks_cluster_auth.this.token
   }
 }
