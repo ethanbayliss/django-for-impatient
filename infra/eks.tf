@@ -1,9 +1,15 @@
 locals {
-  name = substr(terraform.workspace, 6, 27)
+  name = "django-for-impatient"
+  tags = {
+    Environment = var.environment
+    DeployedBy  = "Terraform"
+    GithubRepo = "django-for-impatient"
+    GithubOrg  = "ethanbayliss"
+  }
 }
 
 module "eks_blueprints" {
-  source = "git::https://github.com/aws-ia/terraform-aws-eks-blueprints.git?ref=v4.12.2"
+  source = "git::https://github.com/aws-ia/terraform-aws-eks-blueprints.git?ref=ac614b5a079055f9b18926597c55e8c6c9425263"
 
   cluster_name    = local.name
   cluster_version = "1.23"
@@ -11,13 +17,14 @@ module "eks_blueprints" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
 
-  platform_teams = {
-    ethan = {
-      users = [
-        "arn:aws:iam::619425392361:role/aws-reserved/sso.amazonaws.com/ap-southeast-2/AWSReservedSSO_AdministratorAccess_15343063ce262644"
-      ]
+  map_roles = [
+    {
+      #rolearn must be modified to not include the "/aws-reserved/sso.amazonaws.com/ap-southeast-2" part
+      rolearn  = "arn:aws:iam::619425392361:role/AWSReservedSSO_AdministratorAccess_15343063ce262644"
+      username = "ops-role"
+      groups   = ["system:masters"]
     }
-  }
+  ]
 
   # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/485
   # https://github.com/aws-ia/terraform-aws-eks-blueprints/issues/494
@@ -30,7 +37,8 @@ module "eks_blueprints" {
       fargate_profile_namespaces = [
         {
           namespace = "default"
-      }]
+        },
+      ]
       subnet_ids = module.vpc.private_subnets
     }
     # Providing compute for kube-system namespace where core addons reside
@@ -39,26 +47,13 @@ module "eks_blueprints" {
       fargate_profile_namespaces = [
         {
           namespace = "kube-system"
-      }]
-      subnet_ids = module.vpc.private_subnets
-    }
-    # Sample application
-    app = {
-      fargate_profile_name = "app-wildcard"
-      fargate_profile_namespaces = [
-        {
-          namespace = "app-*"
-      }]
+        }
+      ]
       subnet_ids = module.vpc.private_subnets
     }
   }
 
-  tags = {
-    Environment = var.environment
-    DeployedBy  = "Terraform"
-    GithubRepo = "django-for-impatient"
-    GithubOrg  = "ethanbayliss"
-  }
+  tags = local.tags
 }
 
 

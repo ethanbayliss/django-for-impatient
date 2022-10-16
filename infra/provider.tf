@@ -6,19 +6,13 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.33.0"
     }
-  }  
-  backend "remote" {
-    hostname = "app.terraform.io"
-    organization = "ethanbayliss"
-
-    workspaces {
-      prefix = "infra-django-for-impatient-"
-    }
   }
 }
 
 provider "aws" {
-  region = var.AWS_DEFAULT_REGION
+  region     = var.AWS_DEFAULT_REGION
+  access_key = var.AWS_ACCESS_KEY_ID
+  secret_key = var.AWS_SECRET_ACCESS_KEY
 }
 
 provider "kubernetes" {
